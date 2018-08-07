@@ -6,33 +6,53 @@ import { muscles, exercises } from '../store.js'
 export default class extends Component {
 	state = { 
 		exercises,
-		exercise : {}
+		exercise : {} 
 	}
 
 	getExercisesByMuscles() {
+
+		const initialExercises = muscles.reduce((exercises, category) => ({
+			...exercises,
+			[category]: []
+		}), {})
+
 		return Object.entries(
 			this.state.exercises.reduce((exercises, exercise) => {
 				const { muscles } = exercise
 
-				exercises[muscles] = exercises[muscles] 
-					? [...exercises[muscles], exercise] 
-					: [exercise]
-
+				exercises[muscles] = [...exercises[muscles], exercise]
+				
 				return exercises
-			}, {})
+			}, initialExercises)
 		)
 	}
 
-	handleCategorySelected = category => {
+	handleCategorySelect = category => {
 		this.setState({
 			category
 		})
 	}
 
-	handleExerciseSelected = id => {
+	handleExerciseSelect = id => {
 		this.setState(({ exercises }) => ({
 			exercise: exercises.find(ex => ex.id === id)
 		}))
+	}
+
+	handleExerciseCreate = exercise => {
+		this.setState(({ exercises }) => ({
+			exercises:[
+				...exercises, 
+				exercise
+			]
+		}))
+	}
+
+	handleExerciseDelete = id => {
+		this.setState(({ exercises }) => ({
+			exercises: exercises.filter(ex => ex.id !== id)			// filters out all with differnet id
+		}))
+
 	}
 
 	render () {
@@ -42,20 +62,24 @@ export default class extends Component {
 
 		return <Fragment>
 		
-			<Header />
+			<Header 
+				muscles = {muscles}
+				onExerciseCreate = {this.handleExerciseCreate}
+			/>
 
 			<Exercises 
-				exercise = {exercise}
-				category = {category}
+				exercise =  {exercise}
+				category =  {category}
 				exercises = {exercises}
-				onSelect =  {this.handleExerciseSelected}
+				onSelect =  {this.handleExerciseSelect}
+				onDelete =  {this.handleExerciseDelete}
 			/>
 			
 			<Footer 
-				category={category} 
-				muscles={muscles}
-				onSelect={this.handleCategorySelected}
-			/>
+				category = {category} 
+				muscles =  {muscles}
+				onSelect = {this.handleCategorySelect}
+			/> 
 		
 		</Fragment>
 		

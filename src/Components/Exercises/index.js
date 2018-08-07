@@ -1,5 +1,14 @@
 import React, { Fragment } from 'react'
-import { Grid, Paper, Typography, List, ListItem, ListItemText } from '@material-ui/core/'
+import { 
+	Grid, 
+	IconButton,
+	Paper,
+	Typography, 
+	List, ListItem, 
+	ListItemText, 
+	ListItemSecondaryAction 
+} from '@material-ui/core/'
+import { Delete } from '@material-ui/icons/'
 
 const styles = {
 	Paper: { 
@@ -18,18 +27,22 @@ export default ({
 		id, 
 		title = 'Welcome',
 		description = 'Please select an exercise'
-	}
+	},
+	onDelete
 }) =>
 
 	<Grid container>
 		<Grid item sm>
 			<Paper style={styles.Paper}>
+
 				{ exercises.map(([group, exercises]) => 
 					!category || category === group
 					? <Fragment key = {group} >
+							
 							<Typography variant="headline" style={{textTransform: 'capitalize'}}>
 								{group}
 							</Typography>
+							
 							<List component="ul">
 								{ exercises.map(({ id, title }) => 
 									<ListItem 
@@ -38,9 +51,19 @@ export default ({
 										onClick = {() => onSelect(id)}
 									>
 	      						<ListItemText primary= {title} />	
+	    						
+	    							<ListItemSecondaryAction>
+	    								
+	    								<IconButton onClick={() => onDelete(id) } >
+	    									<Delete/>
+	    								</IconButton> 
+	    							
+	    							</ListItemSecondaryAction>
+
 	    						</ListItem>
 								)}
   						</List>
+							
 							</Fragment>
 					: null
 				)}
